@@ -1,38 +1,30 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "no-chat-report",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "No Chat Report",
+  "description": "Disables the ability for clients to report chat messages to Mojang/Microsoft by sending chat messages as (unsigned) System messages instead",
   "authors": [
-    "Me!"
+    "shawlaf"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/flori-schwa/NoChatReport",
+    "sources": "https://github.com/flori-schwa/NoChatReport"
   },
 
   "license": "CC0-1.0",
   "icon": "assets/modid/icon.png",
 
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
-    ]
-  },
+  "environment": "server",
+  "entrypoints": { },
   "mixins": [
-    "modid.mixins.json"
+    "no-chat-report.mixins.json"
   ],
 
   "depends": {
     "fabricloader": ">=0.14.6",
-    "fabric": "*",
     "minecraft": "~1.19",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
