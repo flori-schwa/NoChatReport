@@ -35,9 +35,9 @@ pipeline {
                     def version = env.BRANCH_NAME;
 
                     if (params.VERSION.isEmpty()) {
-                        version += "${BUILD_NUMBER}"
+                        version += "-${BUILD_NUMBER}"
                     } else {
-                        version += params.VERSION
+                        version += "-${params.VERSION}"
                     }
 
                     sh "./gradlew -Pmod_version=$version build"
