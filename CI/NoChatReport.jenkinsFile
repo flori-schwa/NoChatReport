@@ -30,19 +30,19 @@ pipeline {
 
         stage('Build') {
             steps {
-            withGradle {
-                script {
-                    def version = env.BRANCH_NAME;
+                withGradle {
+                    script {
+                        def version = env.BRANCH_NAME;
 
-                    if (params.VERSION.isEmpty()) {
-                        version += "-${BUILD_NUMBER}"
-                    } else {
-                        version += "-${params.VERSION}"
+                        if (params.VERSION.isEmpty()) {
+                            version += "-${BUILD_NUMBER}"
+                        } else {
+                            version += "-${params.VERSION}"
+                        }
+
+                        sh "./gradlew -Pmod_version=$version clean build"
                     }
-
-                    sh "./gradlew -Pmod_version=$version build"
                 }
-            }
             }
         }
     }
