@@ -1,0 +1,58 @@
+pipeline {
+
+    agent {
+        label 'jdk-17'
+    }
+
+    tools {
+        gradle 'gradle-7.4.2'
+    }
+
+    parameters {
+        booleanParam(name: 'DRY_RUN', defaultValue: false)
+        string(name: 'VERSION', defaultValue: '')
+    }
+
+    triggers {
+        pollSCM('H 3 * * *')
+    }
+
+    stages {
+        stage('Dry Run') {
+            when {
+                expression { params.DRY_RUN }
+            }
+
+            steps {
+                error('Dry Run complete')
+            }
+        }
+
+        stage('Build') {
+            withGradle {
+                script {
+                    def version = env.BRANCH_NAME;
+
+                    if (params.VERSION.isEmpty()) {
+                        version += "${BUILD_NUMBER}"
+                    } else {
+                        version += params.VERSION
+                    }
+
+                    sh "./gradlew -Pmod_version=$version build"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true, followSymlinks: false
+        }
+
+        always {
+            recordIssues(tools: [java()])
+        }
+    }
+
+}
