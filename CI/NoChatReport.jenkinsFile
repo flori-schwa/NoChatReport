@@ -29,6 +29,7 @@ pipeline {
         }
 
         stage('Build') {
+            steps {
             withGradle {
                 script {
                     def version = env.BRANCH_NAME;
@@ -41,6 +42,7 @@ pipeline {
 
                     sh "./gradlew -Pmod_version=$version build"
                 }
+            }
             }
         }
     }
