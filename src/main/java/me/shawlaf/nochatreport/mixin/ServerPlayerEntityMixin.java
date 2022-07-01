@@ -1,10 +1,12 @@
 package me.shawlaf.nochatreport.mixin;
 
+import net.minecraft.client.option.ChatVisibility;
 import net.minecraft.network.message.MessageSender;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Decoration;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,16 +26,15 @@ public class ServerPlayerEntityMixin {
         Registry<MessageType> messageTypeRegistry = thisPlayer.getWorld().getRegistryManager().get(Registry.MESSAGE_TYPE_KEY);
 
         MessageType messageType = messageTypeRegistry.get(typeKey);
+        Decoration decoration = messageType.chat();
 
-        messageType.chat().ifPresent(displayRule -> {
-            if (accessor.invokeAcceptsMessage(typeKey)) {
-                accessor.getNetworkHandler().sendPacket(
-                        new GameMessageS2CPacket(
-                                displayRule.apply(message.getContent(), sender),
-                                messageTypeRegistry.getRawId(messageTypeRegistry.get(MessageType.SYSTEM)) // Sending the actual message type will "format the message twice"
-                        )
-                );
-            }
-        });
+        if (thisPlayer.getClientChatVisibility() == ChatVisibility.FULL) {
+            accessor.getNetworkHandler().sendPacket(
+                    new GameMessageS2CPacket(
+                            decoration.apply(message.getContent(), sender),
+                            false
+                    )
+            );
+        }
     }
 }
